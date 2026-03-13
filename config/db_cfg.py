@@ -1,5 +1,8 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase,mapped_column,Mapped
+from sqlalchemy import DateTime,func
+from datetime import datetime
+
 url = "mysql+aiomysql://root:123456@localhost:3306/news_app?charset=utf8mb4"
 
 engine = create_async_engine(
