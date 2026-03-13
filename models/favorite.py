@@ -2,13 +2,11 @@ from datetime import datetime
 
 from sqlalchemy import UniqueConstraint, Index, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
+from config.db_cfg import Base
 from models.news import News
 from models.users import User
 
 
-class Base(DeclarativeBase):
-    pass
 
 
 class Favorite(Base):

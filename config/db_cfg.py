@@ -18,7 +18,20 @@ session_local = async_sessionmaker(
 
 
 class Base(DeclarativeBase):
-    pass
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        nullable=False,
+        comment="created time"
+
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        nullable=False,
+        comment="updated time"
+
+    )
 
 
 async def get_database():
