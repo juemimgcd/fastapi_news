@@ -1,14 +1,11 @@
 import json
 from typing import Any
 import redis.asyncio as redis
+from config.settings import settings
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
 
-redis_client = redis.Redis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    db=0,
+redis_client = redis.from_url(
+    settings.redis_url,
     decode_responses=True
 
 )

@@ -10,7 +10,7 @@ from utils.exception_handlers import register_exception_handlers
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)  # 开发环境
     yield
 
     await engine.dispose()
