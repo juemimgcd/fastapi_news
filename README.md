@@ -1,6 +1,6 @@
 # FastAPI News Backend
 
-一个基于 **FastAPI + SQLAlchemy Async + MySQL + Redis** 的新闻系统后端示例项目，提供新闻列表/详情/分类、用户体系、收藏、浏览历史等常用能力，并包含 Alembic 迁移配置，适合作为中小型 API 项目的参考模板。
+一个基于 **FastAPI + SQLAlchemy Async + PostgreSQL + Redis** 的新闻系统后端示例项目，提供新闻列表/详情/分类、用户体系、收藏、浏览历史等常用能力，并包含 Alembic 迁移配置，适合作为中小型 API 项目的参考模板。
 
 ---
 
@@ -21,7 +21,7 @@
 - **Python**: 3.8+
 - **Web**: FastAPI, Uvicorn
 - **ORM**: SQLAlchemy 2.x (Async)
-- **DB**: MySQL / MariaDB
+- **DB**: PostgreSQL
 - **Cache**: Redis（项目中有 `cache/` 与相关配置）
 - **Migration**: Alembic
 - **Validation**: Pydantic
@@ -71,7 +71,10 @@ pip install -r requirements.txt
 cp .env_example .env
 ```
 
-然后按你的本地环境修改数据库 / Redis 配置（具体读取方式以代码为准；如果你希望 README 写得更“精准到字段”，我也可以再把配置文件内容读出来对齐）。
+然后按你的本地环境修改数据库 / Redis 配置（具体读取方式以代码为准）。例如 PostgreSQL：
+```bash
+ASYNC_DATABASE_URL=postgresql+asyncpg://USER:PASSWORD@HOST:5432/DB
+```
 
 ### 4. 启动服务
 ```bash
@@ -110,7 +113,9 @@ uvicorn main:app --reload
 
 ## Database & Migration
 
-项目包含 Alembic 配置（`alembic.ini`、`alembic/`）。常见使用方式：
+项目包含 Alembic 配置（`alembic.ini`、`alembic/`）。迁移会读取环境变量 `ASYNC_DATABASE_URL`（见 `config/settings.py` 与 `alembic/env.py`）。
+
+常见使用方式：
 
 - 生成迁移（示例）：
 ```bash
@@ -122,17 +127,15 @@ alembic revision --autogenerate -m "init"
 alembic upgrade head
 ```
 
+> 提示：PostgreSQL 异步驱动使用 `asyncpg`（已在 `requirements.txt` 中包含）。
 
 ---
-
 
 
 ## License
 MIT
 
 
-
 MIT License
 
 ---
-
