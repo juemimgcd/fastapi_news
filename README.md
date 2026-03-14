@@ -122,20 +122,10 @@ alembic revision --autogenerate -m "init"
 alembic upgrade head
 ```
 
-> 说明：如果你当前在 `main.py` 里使用 lifespan 启动时自动 `create_all`，建议在生产环境逐步迁移到 **Alembic 管理 schema**，避免自动建表造成不可控变更。
 
 ---
 
-## Development Notes
 
-### 建议忽略的文件
-建议将以下内容加入 `.gitignore`：
-- `.idea/`（JetBrains IDE 配置）
-- `.venv/`
-- `__pycache__/`
-- `.env`（敏感信息）
-
----
 
 ## License
 MIT
