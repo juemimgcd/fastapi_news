@@ -1,165 +1,144 @@
 # FastAPI News Backend
 
-一个基于 **FastAPI + SQLAlchemy (Async) + MySQL + redis** 构建的新闻管理系统后端项目。项目采用标准的分层架构设计，实现了新闻浏览、分类查询、用户收藏、浏览历史等核心功能。
-
-**项目特点：** 异步高性能、RESTful API 设计、自动数据库迁移（启动时建表）、清晰的分层架构。
+一个基于 **FastAPI + SQLAlchemy Async + MySQL + Redis** 的新闻系统后端示例项目，提供新闻列表/详情/分类、用户体系、收藏、浏览历史等常用能力，并包含 Alembic 迁移配置，适合作为中小型 API 项目的参考模板。
 
 ---
 
-## 📂 项目结构
+## Features
+
+- **异步 API**：FastAPI + SQLAlchemy Async
+- **分层结构清晰**：routers / schemas / crud / models / utils
+- **新闻模块**：分类、分页列表、详情、浏览量、相关推荐
+- **用户模块**：注册/登录、Token 认证（基于数据表存储）
+- **收藏模块**：收藏/取消收藏/收藏列表（同一用户同一新闻唯一约束）
+- **历史模块**：记录用户浏览历史，支持按时间查询
+- **数据库迁移**：已包含 `alembic.ini` 与 `alembic/` 目录（可扩展标准迁移流程）
+
+---
+
+## Tech Stack
+
+- **Python**: 3.8+
+- **Web**: FastAPI, Uvicorn
+- **ORM**: SQLAlchemy 2.x (Async)
+- **DB**: MySQL / MariaDB
+- **Cache**: Redis（项目中有 `cache/` 与相关配置）
+- **Migration**: Alembic
+- **Validation**: Pydantic
+
+---
+
+## Project Structure
 
 ```text
 fastapi_news/
-├── main.py              # 应用入口，注册路由与中间件
-├── config/              # 配置文件
-│   ├── db_cfg.py        # 数据库连接配置 (SQLAlchemy Async)
-│   └── cache_conf.py    # 缓存配置 (Redis)
-├── models/              # 数据库 ORM 模型层
-│   ├── news.py          # 新闻表模型
-│   ├── users.py         # 用户与令牌表模型
-│   ├── favorite.py      # 收藏关系表模型
-│   └── history.py       # 浏览历史表模型
-├── schemas/             # Pydantic 数据验证模型 (请求/响应结构)
-├── routers/             # API 路由控制层
-│   ├── news.py          # 新闻相关接口 (列表/详情/分类)
-│   ├── users.py         # 用户相关接口
-│   ├── favorite.py      # 收藏相关接口
-│   └── history.py       # 历史记录接口
-├── crud/                # 数据库操作逻辑层 (封装 SQL 操作)
-├── utils/               # 工具函数与异常处理
-└── test_main.http       # API 测试脚本
+├── main.py               # 应用入口：注册路由、中间件、生命周期事件等
+├── config/               # 配置（数据库、缓存等）
+├── models/               # ORM Models
+├── schemas/              # Pydantic Schemas（请求/响应）
+├── crud/                 # 数据访问层（封装 SQL 操作）
+├── routers/              # 路由层（业务接口）
+├── utils/                # 工具函数、异常处理等
+├── cache/                # 缓存相关封装（如有）
+├── alembic/              # Alembic 迁移脚本目录
+├── alembic.ini           # Alembic 配置
+├── requirements.txt      # 依赖
+├── .env_example          # 环境变量示例（建议复制为 .env）
+└── test_main.http        # 简单接口测试脚本（IDE 可直接运行）
 ```
 
 ---
 
-## 🛠️ 技术栈
+## Quick Start
 
-- **框架**: FastAPI（高性能异步 Web 框架）
-- **ORM**: SQLAlchemy（2.0+ Async 模式）
-- **数据库**: MySQL / MariaDB
-- **数据验证**: Pydantic
-- **语言**: Python 3.8+
+### 1. 创建并激活虚拟环境（推荐）
+```bash
+python -m venv .venv
+# macOS/Linux
+source .venv/bin/activate
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
 
----
-
-## ⚡ 快速开始
-
-### 1) 环境准备
-
-确保已安装：
-- Python 3.8+
-- MySQL（或 MariaDB）
-
-### 2) 安装依赖
-
-如果项目有 `requirements.txt`，推荐使用：
-
+### 2. 安装依赖
 ```bash
 pip install -r requirements.txt
 ```
 
-若无，可先按如下安装（按需补充）：
-
+### 3. 配置环境变量
+仓库提供了 `.env_example`，建议：
 ```bash
-pip install fastapi sqlalchemy pymysql uvicorn pydantic
+cp .env_example .env
 ```
 
-> 说明：若你使用的是 SQLAlchemy Async + MySQL，常见还会用到 `aiomysql` 或 `asyncmy`（取决于你的数据库驱动选择）。
+然后按你的本地环境修改数据库 / Redis 配置（具体读取方式以代码为准；如果你希望 README 写得更“精准到字段”，我也可以再把配置文件内容读出来对齐）。
 
-### 3) 配置数据库
-
-修改 `config/db_cfg.py` 中的数据库连接字符串，例如：
-
-```python
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:password@localhost:3306/fastapi_news"
-```
-
-### 4) 启动服务
-
-使用 Uvicorn 启动开发服务器：
-
+### 4. 启动服务
 ```bash
 uvicorn main:app --reload
 ```
 
-启动后可访问自动生成的 API 文档：
-
+访问接口文档：
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
 
 ---
 
-## 📡 API 接口说明
+## API Overview（路由以实际代码为准）
 
-项目主要包含以下四大模块的 API 接口：
+### News
+- `GET /api/news/categories`：获取分类列表
+- `GET /api/news/list`：分页获取分类下新闻
+  - query: `categoryId`, `page`, `pageSize`
+- `GET /api/news/detail`：新闻详情（可能会自增浏览量）
+  - query: `id`
+  - response: 可能包含相关推荐
 
-### 新闻模块 (`/api/news`)
+### Users
+- 注册 / 登录 / 用户信息
+- Token 鉴权（项目使用 `UserToken` 表思路）
 
-- `GET /categories`：获取新闻分类列表  
-- `GET /list`：分页获取指定分类下的新闻列表  
-  - 参数：`categoryId`, `page`, `pageSize`
-- `GET /detail`：获取新闻详情（自动增加浏览量）  
-  - 参数：`id`  
-  - 返回：包含相关新闻推荐
+### Favorite
+- 收藏/取消收藏/收藏列表
+- 同一用户同一新闻仅允许一条收藏记录（唯一约束）
 
-### 用户模块 (`/api/users`)
-
-- 用户注册、登录、信息管理  
-- 基于 Token 的身份验证机制（`UserToken` 表）
-
-### 收藏模块 (`/api/favorite`)
-
-- 用户收藏新闻、取消收藏、查看收藏列表  
-- 唯一约束：同一用户对同一新闻只能收藏一次
-
-### 历史模块 (`/api/history`)
-
-- 自动/手动记录用户浏览历史  
-- 按时间排序查看历史记录
+### History
+- 记录浏览历史
+- 按时间排序查询
 
 ---
 
-## 🏗️ 核心设计
+## Database & Migration
 
-### 数据库模型（Models）
+项目包含 Alembic 配置（`alembic.ini`、`alembic/`）。常见使用方式：
 
-项目使用 SQLAlchemy 的 `DeclarativeBase` 定义 ORM 模型，主要包含：
-
-- **User**：存储用户基本信息（用户名、加密密码、头像、性别等）
-- **News**：存储新闻内容、分类、浏览量等
-- **Favorite**：关联用户与新闻的收藏关系表
-- **History**：记录用户浏览新闻的时间戳
-
-### 异步数据库会话
-
-在 `main.py` 中通过 `lifespan` 事件管理器，在应用启动时自动创建数据库表结构：
-
-```python
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-    await engine.dispose()
+- 生成迁移（示例）：
+```bash
+alembic revision --autogenerate -m "init"
 ```
 
-### 跨域支持
+- 执行迁移：
+```bash
+alembic upgrade head
+```
 
-默认开启了 CORS 中间件，允许所有来源的请求（开发环境）。生产环境建议限制具体域名。
-
----
-
-## 🤝 贡献
-
-欢迎提交 Issue 或 Pull Request 来改进这个项目！
+> 说明：如果你当前在 `main.py` 里使用 lifespan 启动时自动 `create_all`，建议在生产环境逐步迁移到 **Alembic 管理 schema**，避免自动建表造成不可控变更。
 
 ---
 
-## 📄 许可证
+## Development Notes
 
-MIT License
+### 建议忽略的文件
+建议将以下内容加入 `.gitignore`：
+- `.idea/`（JetBrains IDE 配置）
+- `.venv/`
+- `__pycache__/`
+- `.env`（敏感信息）
 
 ---
+
+## License
+MIT
 
 
 
