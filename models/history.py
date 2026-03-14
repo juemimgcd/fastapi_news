@@ -3,7 +3,7 @@ from sqlalchemy import Integer, DateTime, ForeignKey, Index
 from datetime import datetime
 from models.users import User
 from models.news import News
-from config.db_cfg import Base
+from models.base import Base
 
 
 class History(Base):

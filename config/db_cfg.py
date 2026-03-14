@@ -1,7 +1,5 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
-from sqlalchemy.orm import DeclarativeBase,mapped_column,Mapped
-from sqlalchemy import DateTime,func
-from datetime import datetime
+
 
 url = "mysql+aiomysql://root:123456@localhost:3306/news_app?charset=utf8mb4"
 
@@ -19,22 +17,6 @@ session_local = async_sessionmaker(
 
 )
 
-
-class Base(DeclarativeBase):
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        nullable=False,
-        comment="created time"
-
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        nullable=False,
-        comment="updated time"
-
-    )
 
 
 async def get_database():

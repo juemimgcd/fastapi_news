@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from config.db_cfg import Base
+from models.base import Base
 from sqlalchemy import Index, Integer, String, Enum, DateTime, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
